@@ -1,0 +1,16 @@
+{
+  "Parameters": {
+    "Environment": "qa1",
+    "Brand": "dhi",
+    "Application": "test-prakass",
+    "Owner": "slippers",
+    "CloudwatchLogsServicebusLogDestinationArn": "arn:aws:logs:us-east-1:767815946864:destination:prod-dhi-cloudwatchlogs-servicebus-destination"
+  },
+  "Tags": {
+    "Name": "test-prakass-example-service",
+    "BusinessUnit": "dhi",
+    "Application": "test-prakass",
+    "Environment": "qa1",
+    "Owner": "slippers"
+  }
+}

@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Prakass experiment lambda
+
+Parameters:
+  # Config
+  LogDestinationArn:
+    Type: String
+
+Resources:
+
+  Lambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: test-prakass-sync-events
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: nodejs12.x
+      Handler: entrypoint.handler
+      MemorySize: 128
+      Timeout: 30
+      Code: ../../dist/syncevents/syncevents.zip
+      Environment:
+        Variables:
+          APP_ENV: 'Dummy value'
+
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: test-prakass-sync-events-lambda-role
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action: sts:AssumeRole
+            Principal:
+              Service: lambda.amazonaws.com
+            Effect: Allow
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: test-prakass-sync-events-lambda-role
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Action:
+                  - ssm:GetParameter
+                Resource: "*"
+                Effect: Allow
+
+  LambdaLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${Lambda}
+      RetentionInDays: 1
+
+  CrossAccountSubscription:
+    Type: AWS::Logs::SubscriptionFilter
+    Properties:
+      DestinationArn: !Ref LogDestinationArn
+      FilterPattern: ''
+      LogGroupName: !Ref LambdaLogs
+
+Outputs:
+  LambdaArn:
+    Value: !GetAtt Lambda.Arn

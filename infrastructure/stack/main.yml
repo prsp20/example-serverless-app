@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Test Prakass Example
+
+Parameters:
+  CloudwatchLogsServicebusLogDestinationArn:
+    Type: String
+
+Resources:
+  TestPakassSyncEventsLambda:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: sync-events-lambda.yml
+      Parameters:
+        LogDestinationArn: !Ref CloudwatchLogsServicebusLogDestinationArn
+
+  TestPrakassWebControllerLambda:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: web-controller-lambda.yml
+      Parameters:
+        LogDestinationArn: !Ref CloudwatchLogsServicebusLogDestinationArn
